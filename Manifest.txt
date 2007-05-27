@@ -1,0 +1,11 @@
+History.txt
+License.txt
+Manifest.txt
+README.txt
+Rakefile
+lib/cache_annotations.rb
+lib/cache_annotations/version.rb
+scripts/txt2html
+setup.rb
+test/test_cache_annotations.rb
+test/test_helper.rb
