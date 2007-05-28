@@ -14,7 +14,7 @@ require File.join(File.dirname(__FILE__), 'lib', 'cache_annotations', 'version')
 
 AUTHOR = 'Gregor Schmidt'  # can also be an array of Authors
 EMAIL = "ruby@schmidtwisser.de"
-DESCRIPTION = "Cache Annotations provides an Annotation like interface to mark methods as functional. These are then cached automagically. This leads to cleaner code."
+DESCRIPTION = "Cache Annotations provides an Annotation like interface to mark methods as functional. These are then cached automagically. This leads to cleaner code without performance implications."
 GEM_NAME = 'cache_annotations' # what ppl will type to install your gem
 
 @config_file = "~/.rubyforge/user-config.yml"

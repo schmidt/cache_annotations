@@ -3,6 +3,7 @@ License.txt
 Manifest.txt
 README.txt
 Rakefile
+examples/fibonacci.rb
 lib/cache_annotations.rb
 lib/cache_annotations/version.rb
 scripts/txt2html
