@@ -79,26 +79,9 @@ CHANGES = hoe.paragraphs_of('History.txt', 0..1).join("\n\n")
 PATH    = (RUBYFORGE_PROJECT == GEM_NAME) ? RUBYFORGE_PROJECT : "#{RUBYFORGE_PROJECT}/#{GEM_NAME}"
 hoe.remote_rdoc_dir = File.join(PATH.gsub(/^#{RUBYFORGE_PROJECT}\/?/,''), 'rdoc')
 
-desc 'Generate website files'
-task :website_generate do
-  Dir['website/**/*.txt'].each do |txt|
-    sh %{ ruby scripts/txt2html #{txt} > #{txt.gsub(/txt$/,'html')} }
-  end
-end
 
-desc 'Upload website files to rubyforge'
-task :website_upload do
-  host = "#{rubyforge_username}@rubyforge.org"
-  remote_dir = "/var/www/gforge-projects/#{PATH}/"
-  local_dir = 'website'
-  sh %{rsync -av #{local_dir}/ #{host}:#{remote_dir}}
-end
-
-desc 'Generate and upload website files'
-task :website => [:website_generate, :website_upload]
-
-desc 'Release the website and new gem version'
-task :deploy => [:check_version, :website, :release] do
+desc 'Release the new gem version'
+task :deploy => [:check_version, :release] do
   puts "Remember to create SVN tag:"
   puts "svn copy svn+ssh://#{rubyforge_username}@rubyforge.org/var/svn/#{PATH}/trunk " +
     "svn+ssh://#{rubyforge_username}@rubyforge.org/var/svn/#{PATH}/tags/REL-#{VERS} "
@@ -106,8 +89,8 @@ task :deploy => [:check_version, :website, :release] do
   puts "Tagging release #{CHANGES}"
 end
 
-desc 'Runs tasks website_generate and install_gem as a local deployment of the gem'
-task :local_deploy => [:website_generate, :install_gem]
+desc 'Runs task install_gem as a local deployment of the gem'
+task :local_deploy => [:install_gem]
 
 task :check_version do
   unless ENV['VERSION']
