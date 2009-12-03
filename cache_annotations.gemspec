@@ -9,17 +9,20 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Gregor Schmidt"]
-  s.date = %q{2009-12-03}
+  s.date = %q{2009-12-04}
   s.description = %q{Cache Annotations provides an Annotation like interface to mark methods as functional. These are then cached automagically. This leads to cleaner code without performance implications.}
   s.email = %q{ruby@schmidtwisser.de}
   s.extra_rdoc_files = [
-    "README.txt"
+    "README.rdoc"
   ]
   s.files = [
-    "History.txt",
+    ".gitignore",
+     "History.txt",
      "License.txt",
-     "README.txt",
+     "README.rdoc",
      "Rakefile",
+     "VERSION.yml",
+     "cache_annotations.gemspec",
      "examples/fibonacci.rb",
      "lib/cache_annotations.rb",
      "test/test_cache_annotations.rb",
