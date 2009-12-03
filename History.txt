@@ -1,3 +1,8 @@
+== 0.1.1 2009-12-03
+
+* 1 minor enhancement:
+  * updated to jeweler and gemcutter
+
 == 0.1.0 2007-05-28
 
 * 1 major enhancement:

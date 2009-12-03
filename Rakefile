@@ -1,106 +1,41 @@
-require 'rubygems'
 require 'rake'
-require 'rake/clean'
-require 'rake/testtask'
-require 'rake/packagetask'
-require 'rake/gempackagetask'
 require 'rake/rdoctask'
-require 'rake/contrib/rubyforgepublisher'
-require 'fileutils'
-require 'hoe'
 
-include FileUtils
-require File.join(File.dirname(__FILE__), 'lib', 'cache_annotations', 'version')
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gemspec|
+    gemspec.name = "cache_annotations"
+    gemspec.summary = "Annotation-like API to configure method caching"
+    gemspec.description = "Cache Annotations provides an Annotation like " +
+      "interface to mark methods as functional. These are then cached " +
+      "automagically. This leads to cleaner code without performance " +
+      "implications." 
+    gemspec.email = "ruby@schmidtwisser.de"
+    gemspec.homepage = "http://github.com/schmidt/cache_annotations"
+    gemspec.authors = ["Gregor Schmidt"]
 
-AUTHOR = 'Gregor Schmidt'  # can also be an array of Authors
-EMAIL = "ruby@schmidtwisser.de"
-DESCRIPTION = "Cache Annotations provides an Annotation like interface to mark methods as functional. These are then cached automagically. This leads to cleaner code without performance implications."
-GEM_NAME = 'cache_annotations' # what ppl will type to install your gem
-
-@config_file = "~/.rubyforge/user-config.yml"
-@config = nil
-def rubyforge_username
-  unless @config
-    begin
-      @config = YAML.load(File.read(File.expand_path(@config_file)))
-    rescue
-      puts <<-EOS
-ERROR: No rubyforge config file found: #{@config_file}"
-Run 'rubyforge setup' to prepare your env for access to Rubyforge
- - See http://newgem.rubyforge.org/rubyforge.html for more details
-      EOS
-      exit
-    end
+    gemspec.add_development_dependency('rake')
+    gemspec.add_development_dependency('jeweler', '>= 1.4.0')
   end
-  @rubyforge_username ||= @config["username"]
+
+  Jeweler::GemcutterTasks.new
+rescue LoadError
+  puts "Jeweler not available. Install it with: sudo gem install jeweler"
 end
 
-RUBYFORGE_PROJECT = 'contextr' # The unix name for your project
-HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
-DOWNLOAD_PATH = "http://rubyforge.org/projects/#{RUBYFORGE_PROJECT}"
-
-NAME = "cache_annotations"
-REV = nil 
-# UNCOMMENT IF REQUIRED: 
-# REV = `svn info`.each {|line| if line =~ /^Revision:/ then k,v = line.split(': '); break v.chomp; else next; end} rescue nil
-VERS = CacheAnnotation::VERSION::STRING + (REV ? ".#{REV}" : "")
-CLEAN.include ['**/.*.sw?', '*.gem', '.config', '**/.DS_Store']
-RDOC_OPTS = ['--quiet', '--title', 'cache_annotations documentation',
-    "--opname", "index.html",
-    "--line-numbers", 
-    "--main", "README",
-    "--inline-source"]
-
-class Hoe
-  def extra_deps 
-    @extra_deps.reject { |x| Array(x).first == 'hoe' } 
-  end 
+desc "Run all tests"
+task :test do 
+  require 'rake/runtest'
+  Rake.run_tests 'test/**/test_*.rb'
 end
 
-# Generate all the Rake tasks
-# Run 'rake -T' to see list of generated tasks (from gem root directory)
-hoe = Hoe.new(GEM_NAME, VERS) do |p|
-  p.author = AUTHOR 
-  p.description = DESCRIPTION
-  p.email = EMAIL
-  p.summary = DESCRIPTION
-  p.url = HOMEPATH
-  p.rubyforge_name = RUBYFORGE_PROJECT if RUBYFORGE_PROJECT
-  p.test_globs = ["test/**/test_*.rb"]
-  p.clean_globs = CLEAN  #An array of file patterns to delete on clean.
-  
-  # == Optional
-  p.changes = p.paragraphs_of("History.txt", 0..1).join("\n\n")
-  #p.extra_deps = []     # An array of rubygem dependencies [name, version], e.g. [ ['active_support', '>= 1.3.1'] ]
-  #p.spec_extras = {}    # A hash of extra values to set in the gemspec.
+desc 'Generate documentation for the literate_maruku gem.'
+Rake::RDocTask.new(:doc) do |doc|
+  doc.rdoc_dir = 'doc'
+  doc.title = 'cache_annotations'
+  doc.options << '--line-numbers' << '--inline-source'
+  doc.rdoc_files.include('README.rdoc')
+  doc.rdoc_files.include('lib/**/*.rb')
 end
 
-CHANGES = hoe.paragraphs_of('History.txt', 0..1).join("\n\n")
-PATH    = (RUBYFORGE_PROJECT == GEM_NAME) ? RUBYFORGE_PROJECT : "#{RUBYFORGE_PROJECT}/#{GEM_NAME}"
-hoe.remote_rdoc_dir = File.join(PATH.gsub(/^#{RUBYFORGE_PROJECT}\/?/,''), 'rdoc')
-
-
-desc 'Release the new gem version'
-task :deploy => [:check_version, :release] do
-  puts "Remember to create SVN tag:"
-  puts "svn copy svn+ssh://#{rubyforge_username}@rubyforge.org/var/svn/#{PATH}/trunk " +
-    "svn+ssh://#{rubyforge_username}@rubyforge.org/var/svn/#{PATH}/tags/REL-#{VERS} "
-  puts "Suggested comment:"
-  puts "Tagging release #{CHANGES}"
-end
-
-desc 'Runs task install_gem as a local deployment of the gem'
-task :local_deploy => [:install_gem]
-
-task :check_version do
-  unless ENV['VERSION']
-    puts 'Must pass a VERSION=x.y.z release version'
-    exit
-  end
-  unless ENV['VERSION'] == VERS
-    puts "Please update your version.rb to match the release version, currently #{VERS}"
-    exit
-  end
-end
-
-
+task :default => :test
